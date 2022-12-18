@@ -1,9 +1,15 @@
 let model;
+
+jQuery(function() {
+  /*  my code */
+  loadModelOnly();
+});
+
 async function loadModel() {
   console.log("model loading..");
   loader = document.getElementById("progress-box");
   load_button = document.getElementById("load-button");
-  loader.style.display = "block";
+  // loader.style.display = "block";
   modelName = "mobilenet";
   model = undefined;
   model = await tf.loadLayersModel(
@@ -12,6 +18,17 @@ async function loadModel() {
   loader.style.display = "none";
   load_button.disabled = true;
   load_button.innerHTML = "Loaded Model";
+  console.log("model loaded..");
+}
+
+async function loadModelOnly() {
+  console.log("model loading..");
+  loader.style.display = "block";
+  modelName = "mobilenet";
+  model = undefined;
+  model = await tf.loadLayersModel(
+      "./sc_detector/artifacts/tfjs/mobilen_model/model.json"
+  );
   console.log("model loaded..");
 }
 
@@ -50,7 +67,7 @@ function loadChart(label, data) {
       labels: label,
       datasets: [
         {
-          label: "Probability Chart",
+          label: "Model Prediction",
           backgroundColor: "rgb(82, 196, 211)",
           borderColor: "rgb(82, 196, 211)",
           color: "white",
@@ -97,58 +114,65 @@ function loadChart(label, data) {
 async function predButton() {
   console.log("model loading..");
 
-  if (model == undefined) {
-    alert("Please load the model first..");
-  }
   if (document.getElementById("predict-box").style.display == "none") {
-    alert("Please load an image using 'Demo Image' or 'Upload Image' button..");
+    alert("Please load an image using 'Upload Image' button..");
+    await loadModelOnly();
   }
+  else if (model == undefined) {
+    alert("Please load the model first..");
+    await loadModel();
+  } else {
+    getPrediction();
+  }
+}
+
+async function getPrediction() {
   console.log(model);
   let image = document.getElementById("test-image");
   let tensor = preprocessImage(image, modelName);
 
   let predictions = await model.predict(tensor).data();
   let results_all = Array.from(predictions)
-    .map(function (p, i) {
-      return {
-        probability: p,
-        className: TARGET_CLASSES[i],
-        index: i,
-      };
-    })
-    .sort(function (a, b) {
-      return b.probability - a.probability;
-    });
+      .map(function (p, i) {
+        return {
+          probability: p,
+          className: TARGET_CLASSES[i],
+          index: i,
+        };
+      })
+      .sort(function (a, b) {
+        return b.probability - a.probability;
+      });
 
   let results = results_all.slice(0, 3);
 
   document.getElementById("predict-box").style.display = "block";
   document.getElementById("prediction").innerHTML =
-    "The predicted type of Skin Cancer is: <br><b>" +
-    results[0].className +
-    "</b>";
+      "The predicted type of Skin Cancer is: <br><b>" +
+      results[0].className +
+      "</b>";
 
   var ul = document.getElementById("predict-list");
   ul.innerHTML = "";
   results.forEach(function (p) {
     console.log(
-      p.className + "(" + p.index + ")" + " " + p.probability.toFixed(6)
+        p.className + "(" + p.index + ")" + " " + p.probability.toFixed(6)
     );
     var li = document.createElement("LI");
     li.innerHTML =
-      p.className + "(" + p.index + ")" + " " + p.probability.toFixed(6);
+        p.className + "(" + p.index + ")" + " " + p.probability.toFixed(6);
     ul.appendChild(li);
   });
 
   // label = ["0", "1", "2", "3", "4", "5", "6"];
   label = [
-    "0: akiec",
-    "1: bcc",
-    "2: bkl",
-    "3: df",
-    "4: mel",
-    "5: nv",
-    "6: vasc",
+    "0: Actinic Keratoses",
+    "1: Basal Cell Carcinoma",
+    "2: Benign Keratosis",
+    "3: Dermatofibroma",
+    "4: Melanoma",
+    "5: Melanocytic Nevi",
+    "6: Vascular skin lesion",
   ];
   if (firstTime == 0) {
     loadChart(label, predictions);

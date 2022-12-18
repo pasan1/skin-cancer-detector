@@ -1,113 +1,233 @@
 <html>
-  <head>
+<head>
     <title>Skin Cancer Detector</title>
     <link
-      href="https://fonts.googleapis.com/css?family=Nunito"
-      rel="stylesheet"
+            href="https://fonts.googleapis.com/css?family=Nunito"
+            rel="stylesheet"
     />
-    <link rel="stylesheet" type="text/css" href="css/app.css" />
-    <link rel="stylesheet" href="css/w3.css" />
-    <link rel="stylesheet" href="css/woza.css" />
+    <link rel="stylesheet" type="text/css" href="css/app.css"/>
+    <link rel="stylesheet" href="css/w3.css"/>
+    <link rel="stylesheet" href="css/woza.css"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
     <script type="text/javascript" src="js/target_classes.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
     <script
-      type="text/javascript"
-      src="https://code.jquery.com/jquery-2.1.1.min.js"
+            type="text/javascript"
+            src="https://code.jquery.com/jquery-2.1.1.min.js"
     ></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.0/chart.min.js"></script>
     <script type="text/javascript" src="js/mobile-net.js"></script>
-  </head>
-  <body>
-    <!-- Top Bar -->
-    <div class="w3-center w3-margin-top">
-      <p class="space-letters">
-        <a class="w3-small w3-hover-text-deep-orange text-color" href="faq.html"
-          ><b>About</b></a
-        >
-        ||
-        <a
-          class="w3-small w3-hover-text-deep-orange text-color"
-          href="https://github.com/IndraP24/Skin-Cancer-Detector"
-        >
-          <b>GitHub Repo</b></a
-        >
-        ||
-        <a
-          class="w3-small w3-hover-text-deep-orange text-color"
-          href="https://www.kaggle.com/indrashispaul/using-mobilenet-keras-tfjs-web-app/notebook"
-        >
-          <b>Kaggle Notebook</b></a
-        >
-      </p>
-    </div>
-
-    <div class="container">
-      <div class="mobilenet-demo-container">
-        <h1>Skin Cancer Detector</h1>
-        <div class="demo-wrapper">
-          <div>
-            <button id="load-button" class="input-button" onclick="loadModel()">
-              Load Model
-            </button>
-            <button
-              id="demo-image-button"
-              class="input-button"
-              onclick="loadDemoImage()"
-            >
-              Demo Image
-            </button>
-            <label for="select-file-image" class="input-button">
-              Upload Image
-            </label>
-            <input
-              id="select-file-image"
-              type="file"
-              onchange="loadFile(event)"
-              style="display: none"
-            />
-            <div
-              id="progress-box"
-              style="display: none; width: 100% !important"
-            >
-              <img src="assets/loading.gif" id="demo-load" width="100px" />
-              <p style="color: white">Loading mobilenet model..</p>
+</head>
+<body>
+<section class="ftco-section" id="login">
+    <div class="container" >
+        <div class="row justify-content-center">
+            <div class="col-md-6 text-center mb-5">
+                <h2 class="heading-section">Skin Cancer Classification tool</h2>
             </div>
-          </div>
-          <div>
-            <button
-              id="predict-button"
-              class="input-button predict-button"
-              onclick="predButton()"
-            >
-              Predict
-            </button>
-          </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <div class="wrapper">
+                    <div class="row no-gutters">
+                        <div class="col-lg-4 col-md-5 d-flex align-items-stretch">
+                            <div class="info-wrap bg-primary w-100 p-md-5 p-4">
+                                <h3>Follow the steps</h3>
+                                <p class="mb-4">We're open for any suggestion or just to have a chat</p>
+                                <div class="dbox w-100 d-flex align-items-start">
+                                    <div class="icon d-flex align-items-center justify-content-center">
+                                        <span class="fa fa-arrow-down"></span>
+                                    </div>
+                                    <div class="text pl-3">
+                                        <p><span><strong>Step 1:</br></strong></span>Fill all fields with patient data
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="dbox w-100 d-flex align-items-center">
+                                    <div class="icon d-flex align-items-center justify-content-center">
+                                        <span class="fa fa-arrow-down"></span>
+                                    </div>
+                                    <div class="text pl-3">
+                                        <p><span><strong>Step 2:</br></strong></span>Fill all fields with patient data
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="dbox w-100 d-flex align-items-center">
+                                    <div class="icon d-flex align-items-center justify-content-center">
+                                        <span class="fa fa-arrow-down"></span>
+                                    </div>
+                                    <div class="text pl-3">
+                                        <p><span><strong>Step 3:</br></strong></span>Fill all fields with patient data
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="dbox w-100 d-flex align-items-center">
+                                    <div class="icon d-flex align-items-center justify-content-center">
+                                        <span class="fa fa-arrow-down"></span>
+                                    </div>
+                                    <div class="text pl-3">
+                                        <p><span><strong>Step 4:</br></strong></span>Fill all fields with patient data
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-8 col-md-7 order-md-last d-flex align-items-stretch">
+                            <div class="contact-wrap w-100 p-md-5 p-4">
+                                <h3 class="mb-4">Fill following details</h3>
+                                <div id="form-message-warning" class="mb-4"></div>
+                                <div id="form-message-success" class="mb-4">
+                                    Your data was sent to Prediction Model, thank you!
+                                </div>
+                                <form onsubmit="predButton()">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label class="label" for="name">Patient ID</label>
+                                                <input type="text" class="form-control" name="name" id="name"
+                                                       placeholder="Patient ID">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label class="label" for="email">Name</label>
+                                                <input type="email" class="form-control" name="email" id="email"
+                                                       placeholder="Name">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label class="label" for="Age">Age</label>
+                                                <input type="number" class="form-control" name="age" id="age"
+                                                       placeholder="Age">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label class="label" for="gender">Gender</label>
+                                                <input type="text" class="form-control" name="gender" id="gender"
+                                                       placeholder="Gender">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label class="label" for="state">Anatomical State</label>
+                                                <input type="text" class="form-control" name="state" id="state"
+                                                       placeholder="Anatomical State">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label class="label" for="select-file-image">Upload File</label>
+                                                <input type="file" class="form-control" name="select-file-image"
+                                                       id="select-file-image" accept="image/*" onchange="loadFile(event)"
+                                                       placeholder="Upload File">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <button type="button" value="Submit data" class="btn btn-primary" onclick="redirect()">Submit data</button>
+                                                <div class="submitting"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="container" id="result">
+    <div class="mobilenet-demo-container">
+        <h1>Skin Cancer Classification tool</h1>
+        <div class="demo-wrapper" style="display: none">
+            <div>
+                <!--            <button id="load-button" class="input-button" onclick="loadModel()">-->
+                <!--              Load Model-->
+                <!--            </button>-->
+                <!--            <button-->
+                <!--              id="demo-image-button"-->
+                <!--              class="input-button"-->
+                <!--              onclick="loadDemoImage()"-->
+                <!--            >-->
+                <!--              Demo Image-->
+                <!--            </button>-->
+                <label for="select-file-image" class="input-button">
+                    Upload Image
+                </label>
+                <input
+                        id="select-file-image"
+                        type="file"
+                        onchange="loadFile(event)"
+                        style="display: none"
+                />
+                <div
+                        id="progress-box"
+                        style="display: none; width: 100% !important"
+                >
+                    <div class="statusBar"></div>
+                </div>
+            </div>
+            <div>
+                <button
+                        id="predict-button"
+                        class="input-button predict-button"
+                        onclick="predButton()"
+                >
+                    Predict
+                </button>
+            </div>
         </div>
         <div class="demo-output">
-          <div class="out-box" id="select-file-box" style="display: none">
-            <img id="test-image" height="300px" width="450px" margin="2px" />
-          </div>
-          <div class="out-box" id="predict-box" style="display: none">
-            <p id="prediction"></p>
-            <br />
-            <p>
-              <b
-                style="
+            <div class="out-box" id="select-file-box" style="display: none">
+                <img id="test-image" height="300px" width="450px" margin="2px"/>
+            </div>
+            <div class="out-box" id="predict-box" style="display: none">
+                <p id="prediction"></p>
+                <br/>
+                <p>
+                    <b
+                            style="
                   color: #c2c2c2 !important;
                   font-style: italic;
                   font-weight: 100;
                   font-size: 18px;
                 "
-                >Top-3 Predictions</b
-              >
-            </p>
-            <ul id="predict-list"></ul>
-          </div>
+                    >Top-3 Predictions</b
+                    >
+                </p>
+                <ul id="predict-list"></ul>
+            </div>
         </div>
-        <div class="chart">
-          <canvas id="chart-box" style="display: none" height="120px"></canvas>
+        <div class="chart" style="background-color: #2b3436;">
+            <canvas id="chart-box" style="display: none" height="120px"></canvas>
         </div>
-      </div>
     </div>
-  </body>
+</div>
+
+<script src="js/jquery.min.js"></script>
+<script src="js/popper.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.validate.min.js"></script>
+<script src="js/main.js"></script>
+<script type="text/javascript" src="js/mobile-net.js"></script>
+<script type="text/javascript" src="js/main.js"></script>
+<script>
+    jQuery(function() {
+        loadModel();
+        $("#login").show();
+        $("#result").hide();
+    });
+
+    function redirect() {
+        $("#login").hide();
+        $("#result").show();
+        predButton();
+    }
+</script>
+</body>
 </html>
